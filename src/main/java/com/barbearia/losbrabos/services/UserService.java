@@ -37,6 +37,12 @@ public class UserService {
         return provider;
     }
 
+    public User findByLogin(String login) {
+        User user = (User) userRepository.findByLogin(login);
+        if (user.equals(null)) throw new UserNotFoundException();
+        return user;
+    }
+
     public LoginResponseDTO login(AuthenticationDTO data) {
         User user = (User) userRepository.findByLogin(data.email().toLowerCase());
         if (user == null)  throw new UserNotFoundException();
@@ -59,22 +65,32 @@ public class UserService {
 
     public ProfileResponseDTO update(ProfileDTO data) {
         User userUpdate = userRepository.findById(data.id()).orElseThrow(() -> new UserNotFoundException());
-
         User existingUserWithEmail = (User) userRepository.findByLogin(data.email());
         if (existingUserWithEmail != null && !existingUserWithEmail.getId().equals(data.id())) throw new UserFoundException("Já possui usuário com esse E-mail.");
 
         userUpdate.setLogin(data.email());
         userUpdate.setName(data.name());
 
-        if (data.old_password() != null && userUpdate.getPassword() != null) {
-            boolean isOldPasswordCorrect = new BCryptPasswordEncoder().matches(data.old_password(), userUpdate.getPassword());
-            if (!isOldPasswordCorrect) throw new InvalidPasswordException("Senha nova não corresponde com a confirmação");
-            String newPassoword = new BCryptPasswordEncoder().encode(data.password());
-            userUpdate.setPassword(newPassoword);
-        } else if (data.password() != null && data.old_password() == null)
-            throw new InvalidPasswordException("A senha antiga deve ser informada para atualizar a senha.");
+        validateOldPasswordWithPassword(data.old_password(), userUpdate.getPassword());
+        validatePasswordWithPasswordConfirmation(data.password(), data.password_confirmation());
 
+        String newPassoword = new BCryptPasswordEncoder().encode(data.password());
+        userUpdate.setPassword(newPassoword);
         userRepository.save(userUpdate);
         return new ProfileResponseDTO(userUpdate.getId(), userUpdate.getName(), userUpdate.getLogin());
+    }
+
+    public void validatePasswordWithPasswordConfirmation(String password, String passwordConfirmation) {
+        if (password != null || password.isEmpty() && passwordConfirmation != null){
+            if (!password.equals(passwordConfirmation)) throw new InvalidPasswordException("Senhas não correspondentes.");
+        }
+    }
+
+    public void validateOldPasswordWithPassword(String oldPassword, String password) {
+        if (oldPassword != null && password != null){
+            boolean isOldPasswordCorrect = new BCryptPasswordEncoder().matches(oldPassword, password);
+            if (!isOldPasswordCorrect) throw new InvalidPasswordException("Senha nova não corresponde com a confirmação");
+        } else if (!password.equals(null) && oldPassword.equals(null))
+            throw new InvalidPasswordException("A senha antiga deve ser informada para atualizar a senha.");
     }
 }

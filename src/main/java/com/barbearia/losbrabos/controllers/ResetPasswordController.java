@@ -16,9 +16,9 @@ public class ResetPasswordController {
     @Autowired
     private ResetPasswordService resetPasswordService;
 
-    @PostMapping("/reset-password")
+    @PostMapping("/password/reset")
     public ResponseEntity resetPassword(@RequestBody ResetPasswordRequestDTO data) {
-        resetPasswordService.resetPassword(data.token(), data.password(), data.email());
+        resetPasswordService.resetPassword(data.token(), data.password(), data.password_confirmation());
         return ResponseEntity.ok().build();
     }
 }

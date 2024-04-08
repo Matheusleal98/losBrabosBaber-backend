@@ -1,5 +1,6 @@
 package com.barbearia.losbrabos.controllers;
 
+import com.barbearia.losbrabos.domain.user.ForgotRequestDTO;
 import com.barbearia.losbrabos.services.SendForgotPasswordEmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,9 @@ public class ForgotPasswordController {
     @Autowired
     private SendForgotPasswordEmailService sendForgotPasswordEmailService;
 
-    @PostMapping("/forgot-password")
-    public ResponseEntity sendEmail(@RequestBody String email) {
-        sendForgotPasswordEmailService.sendEmail(email);
+    @PostMapping("/password/forgot")
+    public ResponseEntity sendEmail(@RequestBody ForgotRequestDTO dto) {
+        sendForgotPasswordEmailService.sendEmail(dto.email());
         return ResponseEntity.ok().build();
     }
 }

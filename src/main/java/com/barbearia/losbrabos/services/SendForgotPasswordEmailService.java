@@ -21,7 +21,7 @@ public class SendForgotPasswordEmailService {
 
     public void sendEmail(String email) {
         User user = (User) userRepository.findByLogin(email.toLowerCase());
-        if (user == null) throw new UserNotFoundException();
+        if(user == null) throw new UserNotFoundException();
 
         String token = tokenService.generateToken(user);
 
@@ -30,7 +30,7 @@ public class SendForgotPasswordEmailService {
         mailMessage.setSubject("Recuperação de senha");
         mailMessage.setText("Olá " + user.getName() + ",\n\n"
                 + "Você solicitou a recuperação de senha. Por favor, clique no link a seguir para redefinir sua senha:\n\n"
-                + "http://localhost:8080/reset-password?token=" + token + "\n\n"
+                + "http://localhost:5173/reset-password?token=" + token + "\n\n"
                 + "Se você não solicitou esta recuperação de senha, por favor, ignore este e-mail.\n\n"
                 + "Atenciosamente,\nLos Brabos Barber");
 
