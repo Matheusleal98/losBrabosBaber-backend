@@ -43,6 +43,10 @@ public class UserService {
         return user;
     }
 
+    public void save(User user){
+        userRepository.save(user);
+    }
+
     public LoginResponseDTO login(AuthenticationDTO data) {
         User user = (User) userRepository.findByLogin(data.email().toLowerCase());
         if (user == null)  throw new UserNotFoundException();
@@ -64,20 +68,23 @@ public class UserService {
     }
 
     public ProfileResponseDTO update(ProfileDTO data) {
-        User userUpdate = userRepository.findById(data.id()).orElseThrow(() -> new UserNotFoundException());
-        User existingUserWithEmail = (User) userRepository.findByLogin(data.email());
-        if (existingUserWithEmail != null && !existingUserWithEmail.getId().equals(data.id())) throw new UserFoundException("Já possui usuário com esse E-mail.");
-
+        User userUpdate = userRepository.findById(data.id())
+                .orElseThrow(() -> new UserNotFoundException());
+        validateUserWithEmail(data.id(), data.email());
         userUpdate.setLogin(data.email());
         userUpdate.setName(data.name());
-
         validateOldPasswordWithPassword(data.old_password(), userUpdate.getPassword());
         validatePasswordWithPasswordConfirmation(data.password(), data.password_confirmation());
-
         String newPassoword = new BCryptPasswordEncoder().encode(data.password());
         userUpdate.setPassword(newPassoword);
         userRepository.save(userUpdate);
         return new ProfileResponseDTO(userUpdate.getId(), userUpdate.getName(), userUpdate.getLogin());
+    }
+
+    public void validateUserWithEmail(Long userId, String email) {
+        User existingUserWithEmail = (User) userRepository.findByLogin(email);
+        if (existingUserWithEmail != null && !existingUserWithEmail.getId().equals(userId))
+            throw new UserFoundException("Já possui usuário com esse E-mail");
     }
 
     public void validatePasswordWithPasswordConfirmation(String password, String passwordConfirmation) {
