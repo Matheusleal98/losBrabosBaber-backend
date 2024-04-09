@@ -31,23 +31,16 @@ public class AppointmentService {
     private final NotificationService notificationService;
 
     public ResponseEntity create(AppointmentRequestDTO appointmentRequestDTO) {
-        LocalDateTime dataAtual = LocalDateTime.now();
+        LocalDateTime currentDate = LocalDateTime.now();
         User user = userService.findById(appointmentRequestDTO.getUserId());
         User provider = userService.findById(appointmentRequestDTO.getProviderId());
         Appointment existingAppointment = appointmentRepository.findByDataAndProviderId(appointmentRequestDTO.getData(), provider);
 
-        if (appointmentRequestDTO.getData().isBefore(dataAtual))
-            throw new InvalidDateException();
-
-        if (user.equals(provider))
-            throw new RuntimeException("Você não pode criar um agendamento para você mesmo.");
-
+        validateAppointmentDate(appointmentRequestDTO.getData(), currentDate);
+        validateAppointmentUserAndProvider(user.getId(), provider.getId());
         Integer appointmentHour = appointmentRequestDTO.getData().getHour();
-        if (appointmentHour < 8 || appointmentHour > 17)
-            throw new DateNotFoundException();
-
-        if (existingAppointment != null)
-            throw new AppointmentBookedException();
+        validateAppointmentHour(appointmentHour);
+        validateExistingAppointment(existingAppointment);
 
         insert(appointmentRequestDTO, user, provider);
 
@@ -96,5 +89,25 @@ public class AppointmentService {
         appointment.setData(data.getData());
         appointment.setCreatedAt(LocalDateTime.now());
         appointmentRepository.save(appointment);
+    }
+
+    private void validateAppointmentDate(LocalDateTime date, LocalDateTime currentDate){
+        if (date.isBefore(currentDate))
+            throw new InvalidDateException();
+    }
+
+    private void validateAppointmentUserAndProvider(Long userId, Long providerId){
+        if (userId.equals(providerId))
+            throw new RuntimeException("Você não pode criar um agendamento para você mesmo.");
+    }
+
+    private void validateAppointmentHour(Integer appointmentHour){
+        if (appointmentHour < 8 || appointmentHour > 17)
+            throw new DateNotFoundException();
+    }
+
+    private void validateExistingAppointment(Appointment existingAppointment){
+        if (existingAppointment != null)
+            throw new AppointmentBookedException();
     }
 }
