@@ -73,10 +73,12 @@ public class UserService {
         validateUserWithEmail(data.id(), data.email());
         userUpdate.setLogin(data.email());
         userUpdate.setName(data.name());
-        validateOldPasswordWithPassword(data.old_password(), userUpdate.getPassword());
+        validateOldPasswordWithPassword(data.old_password(), userUpdate.getPassword(), data.password());
         validatePasswordWithPasswordConfirmation(data.password(), data.password_confirmation());
-        String newPassoword = new BCryptPasswordEncoder().encode(data.password());
-        userUpdate.setPassword(newPassoword);
+        if (data.password() != null){
+            String newPassoword = new BCryptPasswordEncoder().encode(data.password());
+            userUpdate.setPassword(newPassoword);
+        }
         userRepository.save(userUpdate);
         return new ProfileResponseDTO(userUpdate.getId(), userUpdate.getName(), userUpdate.getLogin());
     }
@@ -88,16 +90,16 @@ public class UserService {
     }
 
     public void validatePasswordWithPasswordConfirmation(String password, String passwordConfirmation) {
-        if (password != null || password.isEmpty() && passwordConfirmation != null){
+        if (password != null && passwordConfirmation != null){
             if (!password.equals(passwordConfirmation)) throw new InvalidPasswordException("Senhas não correspondentes.");
         }
     }
 
-    public void validateOldPasswordWithPassword(String oldPassword, String password) {
+    public void validateOldPasswordWithPassword(String oldPassword, String password, String newPassword) {
         if (oldPassword != null && password != null){
             boolean isOldPasswordCorrect = new BCryptPasswordEncoder().matches(oldPassword, password);
-            if (!isOldPasswordCorrect) throw new InvalidPasswordException("Senha nova não corresponde com a confirmação");
-        } else if (!password.equals(null) && oldPassword.equals(null))
+            if (!isOldPasswordCorrect) throw new InvalidPasswordException();
+        } else if (newPassword != null && oldPassword == null)
             throw new InvalidPasswordException("A senha antiga deve ser informada para atualizar a senha.");
     }
 }
