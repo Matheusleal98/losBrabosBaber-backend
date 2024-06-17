@@ -1,12 +1,15 @@
-package com.barbearia.losbrabos.services.impl;
+package com.barbearia.losbrabos.services.validations;
 
 import com.barbearia.losbrabos.domain.user.User;
 import com.barbearia.losbrabos.exceptions.InvalidPasswordException;
 import com.barbearia.losbrabos.exceptions.UserFoundException;
+import com.barbearia.losbrabos.services.impl.UserServiceImpl;
 import com.barbearia.losbrabos.services.interfaces.IUserValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserValidationServiceImpl implements IUserValidationService {
     @Autowired
     private UserServiceImpl userService;

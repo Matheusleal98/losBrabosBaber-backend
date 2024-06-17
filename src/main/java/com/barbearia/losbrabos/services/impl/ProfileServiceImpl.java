@@ -5,9 +5,14 @@ import com.barbearia.losbrabos.domain.user.ProfileResponseDTO;
 import com.barbearia.losbrabos.domain.user.User;
 import com.barbearia.losbrabos.exceptions.UserNotFoundException;
 import com.barbearia.losbrabos.services.interfaces.IProfileService;
+import com.barbearia.losbrabos.services.validations.UserValidationServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
+@Service
 public class ProfileServiceImpl implements IProfileService {
     @Autowired
     private UserServiceImpl userService;

@@ -6,10 +6,14 @@ import com.barbearia.losbrabos.domain.user.User;
 import com.barbearia.losbrabos.exceptions.UserNotFoundException;
 import com.barbearia.losbrabos.infra.security.TokenService;
 import com.barbearia.losbrabos.services.interfaces.IAuthenticateService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
+@Service
 public class AuthenticateServiceImpl implements IAuthenticateService {
     @Autowired
     private AuthenticationManager authenticationManager;
