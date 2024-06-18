@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ResetPasswordController {
 
-    @Autowired
-    private ResetPasswordServiceImpl resetPasswordService;
+    private final ResetPasswordServiceImpl resetPasswordService;
 
     @PostMapping("/password/reset")
     public ResponseEntity resetPassword(@RequestBody ResetPasswordRequestDTO data) {
-        resetPasswordService.resetPassword(data.token(), data.password(), data.password_confirmation());
+        resetPasswordService.resetPassword(data.token(), data.password());
         return ResponseEntity.ok().build();
     }
 }
