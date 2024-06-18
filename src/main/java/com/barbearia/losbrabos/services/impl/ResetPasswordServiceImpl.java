@@ -5,6 +5,7 @@ import com.barbearia.losbrabos.exceptions.UserNotFoundException;
 import com.barbearia.losbrabos.infra.security.TokenService;
 import com.barbearia.losbrabos.services.interfaces.IResetPasswordService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -22,8 +23,8 @@ public class ResetPasswordServiceImpl implements IResetPasswordService {
             throw new UserNotFoundException();
         }
 
-        String tokenReset = tokenService.generateToken(user);
-        user.setPassword(tokenReset);
+        String newPassword = new BCryptPasswordEncoder().encode(password);
+        user.setPassword(newPassword);
         userService.save(user);
     }
 }
