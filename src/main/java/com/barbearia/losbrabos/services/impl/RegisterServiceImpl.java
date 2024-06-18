@@ -6,15 +6,14 @@ import com.barbearia.losbrabos.domain.user.UserRole;
 import com.barbearia.losbrabos.exceptions.UserFoundException;
 import com.barbearia.losbrabos.services.interfaces.IRegisterService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class RegisterServiceImpl implements IRegisterService {
-    @Autowired
-    private UserServiceImpl userService;
+
+    private final UserServiceImpl userService;
 
     @Override
     public void register(RegisterDTO data) {

@@ -7,7 +7,6 @@ import com.barbearia.losbrabos.exceptions.UserNotFoundException;
 import com.barbearia.losbrabos.infra.security.TokenService;
 import com.barbearia.losbrabos.services.interfaces.IAuthenticateService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -15,12 +14,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class AuthenticateServiceImpl implements IAuthenticateService {
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private TokenService tokenService;
-    @Autowired
-    private UserServiceImpl userService;
+    private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
+    private final UserServiceImpl userService;
 
     @Override
     public LoginResponseDTO login(AuthenticationDTO data) {
