@@ -4,7 +4,6 @@ import com.barbearia.losbrabos.domain.user.User;
 import com.barbearia.losbrabos.repositories.UserRepository;
 import com.barbearia.losbrabos.services.interfaces.IUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +12,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements IUserService {
-    @Autowired
-    private UserRepository userRepository;
+
+    private final UserRepository userRepository;
 
     @Override
     public Optional<User> findById(Long id) {

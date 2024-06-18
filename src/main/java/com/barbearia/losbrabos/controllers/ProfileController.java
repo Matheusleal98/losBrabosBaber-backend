@@ -2,9 +2,8 @@ package com.barbearia.losbrabos.controllers;
 
 import com.barbearia.losbrabos.domain.user.ProfileDTO;
 import com.barbearia.losbrabos.domain.user.ProfileResponseDTO;
-import com.barbearia.losbrabos.services.UserService;
+import com.barbearia.losbrabos.services.impl.UpdateProfileServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,12 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProfileController {
 
-    @Autowired
-    private UserService userService;
+    private final UpdateProfileServiceImpl updateProfileService;
 
     @PutMapping("/profile")
     public ResponseEntity<ProfileResponseDTO> update(@RequestBody ProfileDTO data) {
-        ProfileResponseDTO user = userService.update(data);
+        ProfileResponseDTO user = updateProfileService.update(data);
         return ResponseEntity.ok(user);
     }
 
