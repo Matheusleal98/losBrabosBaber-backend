@@ -1,9 +1,8 @@
 package com.barbearia.losbrabos.controllers;
 
 import com.barbearia.losbrabos.domain.user.ForgotRequestDTO;
-import com.barbearia.losbrabos.services.SendForgotPasswordEmailService;
+import com.barbearia.losbrabos.services.impl.SendForgotPasswordEmailServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,8 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ForgotPasswordController {
 
-    @Autowired
-    private SendForgotPasswordEmailService sendForgotPasswordEmailService;
+    private final SendForgotPasswordEmailServiceImpl sendForgotPasswordEmailService;
 
     @PostMapping("/password/forgot")
     public ResponseEntity sendEmail(@RequestBody ForgotRequestDTO dto) {
