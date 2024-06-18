@@ -13,7 +13,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class ListProviderAppointmentsService {
+public class ListProviderAppointmentsServiceImpl {
 
     private final UserServiceImpl userService;
     private final AppointmentServiceImpl appointmentService;
